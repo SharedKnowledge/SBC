@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 
 import net.sharkfw.system.L;
 import net.sharksystem.android.peer.SharkServiceController;
@@ -17,11 +18,11 @@ public class MainActivity extends AppCompatActivity {
     private ViewPager pager;
     private TabLayout tabLayout;
     private SharkServiceController _serviceController;
+    private FragmentManager _fragmentManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         L.setLogLevel(L.LOGLEVEL_ALL);
 
         initFragments();
@@ -48,7 +49,20 @@ public class MainActivity extends AppCompatActivity {
         L.d("Service destroyed", this);
 
         super.onDestroy();
+    }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+
+
+
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+
+        }
     }
 
     // So onDestroy won't be triggered.
@@ -66,10 +80,10 @@ public class MainActivity extends AppCompatActivity {
         pager = (ViewPager) findViewById(R.id.view_pager);
         tabLayout = (TabLayout) findViewById(R.id.tab_layout);
 
-        FragmentManager manager = getSupportFragmentManager();
+        _fragmentManager = getSupportFragmentManager();
 
         //object of PagerAdapter passing fragment manager object as a parameter of constructor of PagerAdapter class.
-        SampleFragmentPagerAdapter adapter = new SampleFragmentPagerAdapter(manager);
+        SampleFragmentPagerAdapter adapter = new SampleFragmentPagerAdapter(_fragmentManager);
 
         //set Adapter to view pager
         pager.setAdapter(adapter);
