@@ -8,11 +8,16 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import net.sharkfw.asip.ASIPSpace;
+import net.sharkfw.asip.engine.ASIPSerializer;
+import net.sharkfw.knowledgeBase.SemanticTag;
+import net.sharkfw.knowledgeBase.SharkKBException;
 import net.sharksystem.android.protocols.wifidirect.WifiDirectPeer;
 
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import net.sharksystem.sbc.R;
 
@@ -69,18 +74,16 @@ public class WifiDirectPeerAdapter extends BaseAdapter {
 
         // Check if an existing view is being reused, otherwise inflate the view
         if (convertView == null) {
+//            convertView = LayoutInflater.from(mContext)
+//                    .inflate(R.layout.list_item_wifidirectdevice, parent, false);
             convertView = LayoutInflater.from(mContext)
-                    .inflate(R.layout.list_item_wifidirectdevice, parent, false);
+                    .inflate(R.layout.list_item_peer, parent, false);
         }
 
-        TextView address = (TextView) convertView.findViewById(R.id.textViewDeviceAddress);
         TextView name = (TextView) convertView.findViewById(R.id.textViewDeviceName);
         TextView status = (TextView) convertView.findViewById(R.id.textViewDeviceStatus);
-        TextView owner = (TextView) convertView.findViewById(R.id.textViewDeviceIsGroupOwner);
-        TextView discovery = (TextView) convertView.findViewById(R.id.textViewDeviceIsServiceDiscoverCapable);
-        TextView primeType = (TextView) convertView.findViewById(R.id.textViewDevicePrimeType);
-        TextView secondType = (TextView) convertView.findViewById(R.id.textViewDeviceSecType);
-        address.setText(device.deviceAddress);
+        TextView interest = (TextView) convertView.findViewById(R.id.textViewTopic);
+
         name.setText(device.deviceName);
         String statusText = "";
         switch (device.status){
@@ -101,10 +104,51 @@ public class WifiDirectPeerAdapter extends BaseAdapter {
                 break;
         }
         status.setText(statusText);
-        owner.setText(""+device.isGroupOwner());
-        discovery.setText(""+device.isServiceDiscoveryCapable());
-        primeType.setText(device.primaryDeviceType);
-        secondType.setText(device.secondaryDeviceType);
+        Map<String, String> txtRecords = peer.getTxtRecords();
+        String interestString = txtRecords.get("interest");
+        try {
+            ASIPSpace space = ASIPSerializer.deserializeASIPInterest(interestString);
+            Iterator<SemanticTag> semanticTagIterator = space.getTopics().stTags();
+            if(semanticTagIterator.hasNext())
+                interest.setText(semanticTagIterator.next().getName());
+            else
+                interest.setText("No topic found");
+        } catch (SharkKBException e) {
+            e.printStackTrace();
+        }
+
+//        TextView address = (TextView) convertView.findViewById(R.id.textViewDeviceAddress);
+//        TextView name = (TextView) convertView.findViewById(R.id.textViewDeviceName);
+//        TextView status = (TextView) convertView.findViewById(R.id.textViewDeviceStatus);
+//        TextView owner = (TextView) convertView.findViewById(R.id.textViewDeviceIsGroupOwner);
+//        TextView discovery = (TextView) convertView.findViewById(R.id.textViewDeviceIsServiceDiscoverCapable);
+//        TextView primeType = (TextView) convertView.findViewById(R.id.textViewDevicePrimeType);
+//        TextView secondType = (TextView) convertView.findViewById(R.id.textViewDeviceSecType);
+//        address.setText(device.deviceAddress);
+//        name.setText(device.deviceName);
+//        String statusText = "";
+//        switch (device.status){
+//            case WifiP2pDevice.CONNECTED:
+//                statusText = "CONNECTED";
+//                break;
+//            case WifiP2pDevice.INVITED:
+//                statusText = "INVITED";
+//                break;
+//            case WifiP2pDevice.FAILED:
+//                statusText = "FAILED";
+//                break;
+//            case WifiP2pDevice.AVAILABLE:
+//                statusText = "AVAILABLE";
+//                break;
+//            case WifiP2pDevice.UNAVAILABLE:
+//                statusText = "UNAVAILABLE";
+//                break;
+//        }
+//        status.setText(statusText);
+//        owner.setText(""+device.isGroupOwner());
+//        discovery.setText(""+device.isServiceDiscoveryCapable());
+//        primeType.setText(device.primaryDeviceType);
+//        secondType.setText(device.secondaryDeviceType);
         return convertView;
     }
 }
