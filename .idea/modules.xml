@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/SBC.iml" filepath="$PROJECT_DIR$/SBC.iml" />
+      <module fileurl="file://$PROJECT_DIR$/SharkFW-Android/SharkFW-Android.iml" filepath="$PROJECT_DIR$/SharkFW-Android/SharkFW-Android.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

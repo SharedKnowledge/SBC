@@ -17,7 +17,6 @@ import java.util.ArrayList;
 public class SampleFragmentPagerAdapter extends FragmentPagerAdapter {
     private String tabTitles[] = new String[] { "Broadcasts", "Radar" };
     private ArrayList<Fragment> fragments = new ArrayList<>();
-//    private Context context;
 
     public SampleFragmentPagerAdapter(FragmentManager fm) {
         super(fm);
