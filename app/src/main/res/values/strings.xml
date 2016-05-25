@@ -5,4 +5,5 @@
     <string name="preferences_title">Einstellungen</string>
     <string name="preferences_interest">Interesse</string>
     <string name="preferences_interest_summary">Tragen Sie hier ein Interesse, welches anderen Personen in der Umgebung gezeigt wird.</string>
+    <string name="button_send_broadcast">Senden</string>
 </resources>

@@ -17,6 +17,7 @@
         android:orientation="horizontal">
 
         <EditText
+            android:id="@+id/editTextBroadcast"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -25,9 +26,10 @@
             android:padding="6dp"/>
 
         <Button
+            android:id="@+id/buttonSendBroadcast"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:text="Send"/>
+            android:text="@string/button_send_broadcast"/>
     </LinearLayout>
 
 </LinearLayout>
