@@ -13,12 +13,12 @@ import net.sharksystem.sbc.R;
 
 public class BroadcastsFragment extends Fragment implements View.OnClickListener {
 
-    private final SharkServiceController _serviceController;
+//    private final SharkServiceController _serviceController;
     private EditText _editText;
     private Button _button;
 
     public BroadcastsFragment() {
-        _serviceController = SharkServiceController.getInstance(getContext().getApplicationContext());
+//        _serviceController = SharkServiceController.getInstance(getContext());
     }
 
     @Override
@@ -34,10 +34,10 @@ public class BroadcastsFragment extends Fragment implements View.OnClickListener
 
     @Override
     public void onClick(View v) {
-        String broadcast = _editText.getText().toString();
-
-        if(!broadcast.isEmpty()){
-            _serviceController.sendBroadcast(broadcast);
-        }
+//        String broadcast = _editText.getText().toString();
+//
+//        if(!broadcast.isEmpty()){
+//            _serviceController.sendBroadcast(broadcast);
+//        }
     }
 }
