@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import net.sharkfw.asip.ASIPInterest;
 import net.sharkfw.asip.ASIPSpace;
 import net.sharkfw.asip.engine.ASIPSerializer;
 import net.sharkfw.knowledgeBase.SemanticTag;
@@ -70,7 +71,6 @@ public class WifiDirectPeerAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         WifiDirectPeer peer = getItem(position);
-        WifiP2pDevice device = peer.getDevice();
 
         // Check if an existing view is being reused, otherwise inflate the view
         if (convertView == null) {
@@ -81,50 +81,57 @@ public class WifiDirectPeerAdapter extends BaseAdapter {
         }
 
         TextView name = (TextView) convertView.findViewById(R.id.textViewDeviceName);
-        TextView status = (TextView) convertView.findViewById(R.id.textViewDeviceStatus);
+        TextView address = (TextView) convertView.findViewById(R.id.textViewDeviceAddress);
+//        TextView status = (TextView) convertView.findViewById(R.id.textViewDeviceStatus);
         TextView interest = (TextView) convertView.findViewById(R.id.textViewTopic);
 
-        name.setText(device.deviceName);
-        String statusText = "";
-        switch (device.status){
-            case WifiP2pDevice.CONNECTED:
-                statusText = "CONNECTED";
-                break;
-            case WifiP2pDevice.INVITED:
-                statusText = "INVITED";
-                break;
-            case WifiP2pDevice.FAILED:
-                statusText = "FAILED";
-                break;
-            case WifiP2pDevice.AVAILABLE:
-                statusText = "AVAILABLE";
-                break;
-            case WifiP2pDevice.UNAVAILABLE:
-                statusText = "UNAVAILABLE";
-                break;
-        }
-        status.setText(statusText);
-        Map<String, String> txtRecords = peer.getTxtRecords();
-        String interestString = txtRecords.get("interest");
-        try {
-            ASIPSpace space = ASIPSerializer.deserializeASIPInterest(interestString);
-            Iterator<SemanticTag> semanticTagIterator = space.getTopics().stTags();
-            if(semanticTagIterator.hasNext())
-                interest.setText(semanticTagIterator.next().getName());
-            else
+        name.setText(peer.deviceName);
+//        String statusText = "";
+//        switch (peer.status){
+//            case WifiP2pDevice.CONNECTED:
+//                statusText = "CONNECTED";
+//                break;
+//            case WifiP2pDevice.INVITED:
+//                statusText = "INVITED";
+//                break;
+//            case WifiP2pDevice.FAILED:
+//                statusText = "FAILED";
+//                break;
+//            case WifiP2pDevice.AVAILABLE:
+//                statusText = "AVAILABLE";
+//                break;
+//            case WifiP2pDevice.UNAVAILABLE:
+//                statusText = "UNAVAILABLE";
+//                break;
+//        }
+//        status.setText(statusText);
+        try{
+            ASIPInterest asipInterest = peer.getInterest();
+            Iterator<SemanticTag> semanticTagIterator = asipInterest.getTopics().stTags();
+            String text = "";
+            while(semanticTagIterator.hasNext()) {
+                if(text.isEmpty()){
+                    text = semanticTagIterator.next().getName();
+                } else {
+                    text += ", " + semanticTagIterator.next().getName();
+                }
+            }
+            if(text.isEmpty()){
                 interest.setText("No topic found");
+            } else {
+                interest.setText(text);
+            }
         } catch (SharkKBException e) {
             e.printStackTrace();
         }
+        address.setText(peer.deviceAddress);
 
-//        TextView address = (TextView) convertView.findViewById(R.id.textViewDeviceAddress);
 //        TextView name = (TextView) convertView.findViewById(R.id.textViewDeviceName);
 //        TextView status = (TextView) convertView.findViewById(R.id.textViewDeviceStatus);
 //        TextView owner = (TextView) convertView.findViewById(R.id.textViewDeviceIsGroupOwner);
 //        TextView discovery = (TextView) convertView.findViewById(R.id.textViewDeviceIsServiceDiscoverCapable);
 //        TextView primeType = (TextView) convertView.findViewById(R.id.textViewDevicePrimeType);
 //        TextView secondType = (TextView) convertView.findViewById(R.id.textViewDeviceSecType);
-//        address.setText(device.deviceAddress);
 //        name.setText(device.deviceName);
 //        String statusText = "";
 //        switch (device.status){
