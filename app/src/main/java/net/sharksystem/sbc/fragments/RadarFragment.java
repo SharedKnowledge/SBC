@@ -11,7 +11,7 @@ import android.widget.ListView;
 
 import net.sharksystem.android.protocols.wifidirect.WifiDirectPeer;
 import net.sharksystem.android.peer.SharkServiceController;
-import net.sharksystem.sbc.Application;
+import net.sharksystem.android.Application;
 import net.sharksystem.sbc.R;
 import net.sharksystem.sbc.adapters.WifiDirectPeerAdapter;
 

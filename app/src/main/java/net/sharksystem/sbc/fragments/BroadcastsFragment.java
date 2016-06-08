@@ -14,9 +14,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 
+import net.sharkfw.system.L;
 import net.sharksystem.android.peer.SharkServiceController;
 import net.sharksystem.android.protocols.wifidirect.WifiDirectKPNotifier;
-import net.sharksystem.sbc.Application;
+import net.sharksystem.android.Application;
 import net.sharksystem.sbc.R;
 import net.sharksystem.sbc.adapters.WifiDirectBroadcastAdapter;
 
@@ -46,6 +47,7 @@ public class BroadcastsFragment extends Fragment implements View.OnClickListener
                 String action = intent.getAction();
 
                 if(WifiDirectKPNotifier.NEW_BROADCAST_ACTION.equals(action)){
+                    L.d("Received a broadcast", this);
 //                    _broadCasts.add(intent.getStringExtra("broadcast_message"));
                     _broadCastAdapter.add(intent.getStringExtra("broadcast_message"));
                 }
