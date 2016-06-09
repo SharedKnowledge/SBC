@@ -1,5 +1,9 @@
 package net.sharksystem.sbc.activities;
 
+import android.content.Context;
+import android.net.wifi.WifiManager;
+import android.support.v4.app.DialogFragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentManager;
@@ -14,24 +18,32 @@ import net.sharkfw.system.L;
 import net.sharksystem.android.peer.SharkServiceController;
 import net.sharksystem.sbc.R;
 import net.sharksystem.sbc.adapters.SampleFragmentPagerAdapter;
+import net.sharksystem.sbc.fragments.WifiActivationFragment;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity
+        implements WifiActivationFragment.NoticeDialogListener{
 
     private ViewPager pager;
     private TabLayout tabLayout;
     private SharkServiceController _serviceController;
     private FragmentManager _fragmentManager;
+    private WifiManager _wifiManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         L.setLogLevel(L.LOGLEVEL_ALL);
 
-
-
         initFragments();
 
-        _serviceController = SharkServiceController.getInstance(this);
+        _wifiManager = (WifiManager) this.getSystemService(Context.WIFI_SERVICE);
+
+        if(_wifiManager.isWifiEnabled()){
+            _serviceController = SharkServiceController.getInstance(this);
+            _serviceController.bindToService();
+        } else {
+            showWifiActivationDialog();
+        }
     }
 
     @Override
@@ -43,20 +55,18 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onStop() {
-        _serviceController.unbindFromService();
+        if(_wifiManager.isWifiEnabled()){
+            _serviceController.unbindFromService();
+        }
         super.onStop();
     }
 
     @Override
-    protected void onStart() {
-        _serviceController.bindToService();
-        super.onStart();
-    }
-
-    @Override
     protected void onDestroy() {
-        _serviceController.unbindFromService();
-        _serviceController.stopService();
+        if(_wifiManager.isWifiEnabled()){
+            _serviceController.unbindFromService();
+            _serviceController.stopService();
+        }
         L.d("Service destroyed", this);
 
         super.onDestroy();
@@ -66,7 +76,12 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_reset:
-                return true;
+                _serviceController.unbindFromService();
+                _serviceController.stopService();
+                _serviceController.resetPeers();
+                Intent intent = new Intent(this, IntroActivity.class);
+                startActivity(intent);
+
             case R.id.action_restart_wifi:
                 return true;
             default:
@@ -108,4 +123,23 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.setTabsFromPagerAdapter(adapter);
     }
 
+    public void showWifiActivationDialog() {
+        // Create an instance of the dialog fragment and show it
+        DialogFragment dialog = new WifiActivationFragment();
+        dialog.show(getSupportFragmentManager(), "WifiActivationFragment");
+    }
+
+    @Override
+    public void onDialogPositiveClick(DialogFragment dialog) {
+        _wifiManager.setWifiEnabled(true);
+
+        _serviceController = SharkServiceController.getInstance(this);
+        _serviceController.bindToService();
+    }
+
+    @Override
+    public void onDialogNegativeClick(DialogFragment dialog) {
+        Intent intent = new Intent(this, IntroActivity.class);
+        startActivity(intent);
+    }
 }
