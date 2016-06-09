@@ -7,10 +7,13 @@
     <string name="preferences_interest_summary">Tragen Sie hier ein Interesse, welches anderen Personen in der Umgebung gezeigt wird.</string>
     <string name="button_send_broadcast">Senden</string>
 
-    <string name="title_activity_fullscreen">SBC</string>
+    // Menu
+    <string name="reset">Reset</string>
+    <string name="restartWifi">Wifi neustarten</string>
+
+    // IntroActivity
     <string name="intro_button">Weiter</string>
     <string name="intro_content">Das wird der Text, der diese App erklären wird.</string>
-    <string name="title_activity_setup">Setup</string>
 
     // SetupActivity
     <string name="setup_description">Bitte gebe hier einen Namen und ein Interesse ein mit denen andere Nutzer dich finden können.</string>

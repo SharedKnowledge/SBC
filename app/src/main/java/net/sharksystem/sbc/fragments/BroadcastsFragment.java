@@ -1,5 +1,6 @@
 package net.sharksystem.sbc.fragments;
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -10,9 +11,11 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import net.sharkfw.system.L;
 import net.sharksystem.android.peer.SharkServiceController;
@@ -61,6 +64,11 @@ public class BroadcastsFragment extends Fragment implements View.OnClickListener
 //                _broadcastReceiver, intentFilter);
     }
 
+    public static void hideSoftKeyboard(Activity activity) {
+        InputMethodManager inputMethodManager = (InputMethodManager)  activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
+    }
+
     @Override
     public void onResume() {
         IntentFilter intentFilter = new IntentFilter();
@@ -93,9 +101,15 @@ public class BroadcastsFragment extends Fragment implements View.OnClickListener
     @Override
     public void onClick(View v) {
         String broadcast = _editText.getText().toString();
-//
+
+        hideSoftKeyboard(getActivity());
+
         if(!broadcast.isEmpty()){
             _serviceController.sendBroadcast(broadcast);
+            Toast.makeText(getContext(), "Broadcast sent", Toast.LENGTH_SHORT).show();
+            _editText.getText().clear();
+        } else {
+            Toast.makeText(getContext(), "Broadcast is empty", Toast.LENGTH_SHORT).show();
         }
     }
 

@@ -15,7 +15,7 @@ import java.util.ArrayList;
  * Created by j4rvis on 12.05.16.
  */
 public class SampleFragmentPagerAdapter extends FragmentPagerAdapter {
-    private String tabTitles[] = new String[] { "Broadcasts", "Radar" };
+    private String tabTitles[] = new String[] { "Radar", "Broadcasts" };
     private ArrayList<Fragment> fragments = new ArrayList<>();
 
     public SampleFragmentPagerAdapter(FragmentManager fm) {
@@ -32,13 +32,13 @@ public class SampleFragmentPagerAdapter extends FragmentPagerAdapter {
         Fragment f;
         switch (position){
             case 0:
-                f = new BroadcastsFragment();
-                break;
-            case 1:
                 f = new RadarFragment();
                 break;
-            default:
+            case 1:
                 f = new BroadcastsFragment();
+                break;
+            default:
+                f = new RadarFragment();
                 break;
         }
         return f;
