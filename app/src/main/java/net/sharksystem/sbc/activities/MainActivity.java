@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -28,6 +29,7 @@ public class MainActivity extends AppCompatActivity
     private SharkServiceController _serviceController;
     private FragmentManager _fragmentManager;
     private WifiManager _wifiManager;
+    private Menu _menu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,17 +41,25 @@ public class MainActivity extends AppCompatActivity
         _wifiManager = (WifiManager) this.getSystemService(Context.WIFI_SERVICE);
 
         if(_wifiManager.isWifiEnabled()){
+//            _menu.getItem(0).setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_signal_wifi_4_bar, null));
             _serviceController = SharkServiceController.getInstance(this);
             _serviceController.bindToService();
         } else {
+//            _menu.getItem(0).setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_signal_wifi_off, null));
             showWifiActivationDialog();
         }
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        _menu = menu;
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu, menu);
+        if(_wifiManager.isWifiEnabled()){
+            _menu.getItem(0).setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_signal_wifi_4_bar, null));
+        } else {
+            _menu.getItem(0).setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_signal_wifi_off, null));
+        }
         return true;
     }
 
@@ -81,8 +91,14 @@ public class MainActivity extends AppCompatActivity
                 _serviceController.resetPeers();
                 Intent intent = new Intent(this, IntroActivity.class);
                 startActivity(intent);
-
-            case R.id.action_restart_wifi:
+            case R.id.action_toggle_wifi:
+                if(_wifiManager.isWifiEnabled()){
+                    _wifiManager.setWifiEnabled(false);
+                    _menu.getItem(0).setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_signal_wifi_off, null));
+                } else {
+                    _wifiManager.setWifiEnabled(true);
+                    _menu.getItem(0).setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_signal_wifi_4_bar, null));
+                }
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -133,6 +149,7 @@ public class MainActivity extends AppCompatActivity
     public void onDialogPositiveClick(DialogFragment dialog) {
         _wifiManager.setWifiEnabled(true);
 
+        _menu.getItem(0).setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_signal_wifi_4_bar, null));
         _serviceController = SharkServiceController.getInstance(this);
         _serviceController.bindToService();
     }

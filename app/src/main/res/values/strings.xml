@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">SBC</string>
+    <string name="app_name">SharkBroadCast</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="settings">Settings</string>
     <string name="preferences_title">Einstellungen</string>
@@ -9,11 +9,11 @@
 
     // Menu
     <string name="reset">Reset</string>
-    <string name="restartWifi">Wifi neustarten</string>
+    <string name="toggleWifi">toggle Wifi</string>
 
     // IntroActivity
     <string name="intro_button">Weiter</string>
-    <string name="intro_content">Das wird der Text, der diese App erklären wird.</string>
+    <string name="intro_content">SharkBroadCast ist ein Prototyp der die Funktionalität für ein soziales Netzwerk ohne die Benutzung des Internets aufzeigen soll.</string>
 
     // SetupActivity
     <string name="setup_description">Bitte gebe hier einen Namen und ein Interesse ein mit denen andere Nutzer dich finden können.</string>
