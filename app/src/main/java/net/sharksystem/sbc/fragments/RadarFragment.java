@@ -15,7 +15,8 @@ import net.sharksystem.android.Application;
 import net.sharksystem.sbc.R;
 import net.sharksystem.sbc.adapters.WifiDirectPeerAdapter;
 
-import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class RadarFragment extends Fragment {
 
@@ -25,7 +26,7 @@ public class RadarFragment extends Fragment {
     private ListView _listView;
     private WifiDirectPeerAdapter _peerAdapter;
     private final Context _context;
-    private ArrayList<WifiDirectPeer> _peerList;
+    private CopyOnWriteArrayList<WifiDirectPeer> mPeerList;
 
     public RadarFragment() {
         _context = Application.getAppContext();
@@ -38,8 +39,19 @@ public class RadarFragment extends Fragment {
         _thread = new Runnable() {
             @Override
             public void run() {
-                _peerList = _serviceController.getPeers();
-                _peerAdapter.setList(_peerList);
+                mPeerList = _serviceController.getPeers();
+
+                long current = System.currentTimeMillis();
+
+                Iterator<WifiDirectPeer> iterator = mPeerList.iterator();
+                while (iterator.hasNext()){
+                    WifiDirectPeer peer = iterator.next();
+                    if((current - peer.getLastUpdated()) > 1000 * 60){
+                        mPeerList.remove(peer);
+                    }
+                }
+
+                _peerAdapter.setList(mPeerList);
                 _threadHandler.postDelayed(this, 5000);
             }
         };

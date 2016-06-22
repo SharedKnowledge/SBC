@@ -24,12 +24,15 @@ import net.sharksystem.sbc.fragments.WifiActivationFragment;
 public class MainActivity extends AppCompatActivity
         implements WifiActivationFragment.NoticeDialogListener{
 
-    private ViewPager pager;
-    private TabLayout tabLayout;
-    private SharkServiceController _serviceController;
-    private FragmentManager _fragmentManager;
-    private WifiManager _wifiManager;
-    private Menu _menu;
+    private ViewPager mPager;
+    private TabLayout mTabLayout;
+    private SharkServiceController mServiceController;
+    private FragmentManager mFragmentManager;
+    private WifiManager mWifiManager;
+    private Menu mMenu;
+
+    private String mName = "";
+    private String mInterest = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,66 +41,66 @@ public class MainActivity extends AppCompatActivity
 
         initFragments();
 
-        _wifiManager = (WifiManager) this.getSystemService(Context.WIFI_SERVICE);
+        mWifiManager = (WifiManager) this.getSystemService(Context.WIFI_SERVICE);
 
-        if(_wifiManager.isWifiEnabled()){
-//            _menu.getItem(0).setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_signal_wifi_4_bar, null));
-            _serviceController = SharkServiceController.getInstance(this);
-            _serviceController.bindToService();
+        Intent intent = getIntent();
+        mName = intent.getStringExtra("name");
+        mInterest = intent.getStringExtra("interest");
+
+
+        if(mWifiManager.isWifiEnabled()){
+            mServiceController = SharkServiceController.getInstance(this);
+            mServiceController.setOffer(mName, mInterest);
+            mServiceController.bindToService();
         } else {
-//            _menu.getItem(0).setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_signal_wifi_off, null));
             showWifiActivationDialog();
         }
     }
 
     @Override
+    protected void onResume() {
+        mServiceController.bindToService();
+        super.onResume();
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        _menu = menu;
+        mMenu = menu;
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu, menu);
-        if(_wifiManager.isWifiEnabled()){
-            _menu.getItem(0).setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_signal_wifi_4_bar, null));
+        if(mWifiManager.isWifiEnabled()){
+            mMenu.getItem(0).setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_signal_wifi_4_bar, null));
         } else {
-            _menu.getItem(0).setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_signal_wifi_off, null));
+            mMenu.getItem(0).setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_signal_wifi_off, null));
         }
         return true;
     }
 
     @Override
     protected void onStop() {
-        if(_wifiManager.isWifiEnabled()){
-            _serviceController.unbindFromService();
-        }
+        mServiceController.unbindFromService();
         super.onStop();
-    }
-
-    @Override
-    protected void onDestroy() {
-        if(_wifiManager.isWifiEnabled()){
-            _serviceController.unbindFromService();
-            _serviceController.stopService();
-        }
-        L.d("Service destroyed", this);
-
-        super.onDestroy();
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_reset:
-                _serviceController.unbindFromService();
-                _serviceController.stopService();
-                _serviceController.resetPeers();
+                mServiceController.unbindFromService();
+                mServiceController.resetPeers();
                 Intent intent = new Intent(this, IntroActivity.class);
                 startActivity(intent);
+                return true;
             case R.id.action_toggle_wifi:
-                if(_wifiManager.isWifiEnabled()){
-                    _wifiManager.setWifiEnabled(false);
-                    _menu.getItem(0).setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_signal_wifi_off, null));
+                if(mWifiManager.isWifiEnabled()){
+                    mWifiManager.setWifiEnabled(false);
+                    mMenu.getItem(0).setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_signal_wifi_off, null));
+                    mServiceController.unbindFromService();
                 } else {
-                    _wifiManager.setWifiEnabled(true);
-                    _menu.getItem(0).setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_signal_wifi_4_bar, null));
+                    mWifiManager.setWifiEnabled(true);
+                    mMenu.getItem(0).setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_signal_wifi_4_bar, null));
+                    mServiceController.setOffer(mName, mInterest);
+                    mServiceController.bindToService();
                 }
                 return true;
             default:
@@ -107,10 +110,10 @@ public class MainActivity extends AppCompatActivity
     }
 
     // So onDestroy won't be triggered.
-    @Override
-    public void onBackPressed() {
-        moveTaskToBack(true);
-    }
+//    @Override
+//    public void onBackPressed() {
+//        moveTaskToBack(true);
+//    }
 
     public void initFragments(){
         setContentView(R.layout.activity_main);
@@ -118,25 +121,25 @@ public class MainActivity extends AppCompatActivity
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
 
-        pager = (ViewPager) findViewById(R.id.view_pager);
-        tabLayout = (TabLayout) findViewById(R.id.tab_layout);
+        mPager = (ViewPager) findViewById(R.id.view_pager);
+        mTabLayout = (TabLayout) findViewById(R.id.tab_layout);
 
-        _fragmentManager = getSupportFragmentManager();
+        mFragmentManager = getSupportFragmentManager();
 
         //object of PagerAdapter passing fragment manager object as a parameter of constructor of PagerAdapter class.
-        SampleFragmentPagerAdapter adapter = new SampleFragmentPagerAdapter(_fragmentManager);
+        SampleFragmentPagerAdapter adapter = new SampleFragmentPagerAdapter(mFragmentManager);
 
-        //set Adapter to view pager
-        pager.setAdapter(adapter);
+        //set Adapter to view mPager
+        mPager.setAdapter(adapter);
 
         //set tablayout with viewpager
-        tabLayout.setupWithViewPager(pager);
+        mTabLayout.setupWithViewPager(mPager);
 
         // adding functionality to tab and viewpager to manage each other when a page is changed or when a tab is selected
-        pager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+        mPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(mTabLayout));
 
         //Setting tabs from adpater
-        tabLayout.setTabsFromPagerAdapter(adapter);
+        mTabLayout.setTabsFromPagerAdapter(adapter);
     }
 
     public void showWifiActivationDialog() {
@@ -147,11 +150,12 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onDialogPositiveClick(DialogFragment dialog) {
-        _wifiManager.setWifiEnabled(true);
+        mWifiManager.setWifiEnabled(true);
 
-        _menu.getItem(0).setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_signal_wifi_4_bar, null));
-        _serviceController = SharkServiceController.getInstance(this);
-        _serviceController.bindToService();
+        mMenu.getItem(0).setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_signal_wifi_4_bar, null));
+        mServiceController = SharkServiceController.getInstance(this);
+        mServiceController.setOffer(mName, mInterest);
+        mServiceController.bindToService();
     }
 
     @Override

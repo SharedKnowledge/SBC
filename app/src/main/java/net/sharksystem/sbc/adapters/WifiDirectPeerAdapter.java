@@ -1,7 +1,6 @@
 package net.sharksystem.sbc.adapters;
 
 import android.content.Context;
-import android.net.wifi.p2p.WifiP2pDevice;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,8 +8,6 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import net.sharkfw.asip.ASIPInterest;
-import net.sharkfw.asip.ASIPSpace;
-import net.sharkfw.asip.engine.ASIPSerializer;
 import net.sharkfw.knowledgeBase.SemanticTag;
 import net.sharkfw.knowledgeBase.SharkKBException;
 import net.sharksystem.android.protocols.wifidirect.WifiDirectPeer;
@@ -18,7 +15,6 @@ import net.sharksystem.android.protocols.wifidirect.WifiDirectPeer;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import net.sharksystem.sbc.R;
 
@@ -81,11 +77,11 @@ public class WifiDirectPeerAdapter extends BaseAdapter {
         }
 
         TextView name = (TextView) convertView.findViewById(R.id.textViewDeviceName);
-        TextView address = (TextView) convertView.findViewById(R.id.textViewDeviceAddress);
+//        TextView address = (TextView) convertView.findViewById(R.id.textViewDeviceAddress);
 //        TextView status = (TextView) convertView.findViewById(R.id.textViewDeviceStatus);
         TextView interest = (TextView) convertView.findViewById(R.id.textViewTopic);
 
-        name.setText(peer.deviceName);
+        name.setText(peer.getName());
 //        String statusText = "";
 //        switch (peer.status){
 //            case WifiP2pDevice.CONNECTED:
@@ -106,7 +102,7 @@ public class WifiDirectPeerAdapter extends BaseAdapter {
 //        }
 //        status.setText(statusText);
         try{
-            ASIPInterest asipInterest = peer.getInterest();
+            ASIPInterest asipInterest = peer.getmInterest();
             Iterator<SemanticTag> semanticTagIterator = asipInterest.getTopics().stTags();
             String text = "";
             while(semanticTagIterator.hasNext()) {
@@ -124,7 +120,7 @@ public class WifiDirectPeerAdapter extends BaseAdapter {
         } catch (SharkKBException e) {
             e.printStackTrace();
         }
-        address.setText(peer.deviceAddress);
+//        address.setText(peer.deviceAddress);
 
 //        TextView name = (TextView) convertView.findViewById(R.id.textViewDeviceName);
 //        TextView status = (TextView) convertView.findViewById(R.id.textViewDeviceStatus);

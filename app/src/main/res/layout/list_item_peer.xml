@@ -5,45 +5,23 @@
               android:layout_height="wrap_content"
               android:padding="16dp">
 
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="2">
-
-        <TextView
-            android:textColor="@android:color/black"
-            android:id="@+id/textViewDeviceName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Name"/>
-
-
-        <TextView
-            android:textColor="@android:color/black"
-            android:id="@+id/textViewDeviceAddress"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Status"/>
-
-    </LinearLayout>
-
-    <LinearLayout
+    <TextView
         android:textColor="@android:color/black"
-        android:orientation="vertical"
+        android:id="@+id/textViewDeviceName"
         android:layout_width="0dp"
+        android:layout_weight="1"
         android:layout_height="match_parent"
-        android:layout_weight="3">
+        android:text="Name"/>
 
-        <TextView
-            android:textColor="@android:color/black"
-            android:id="@+id/textViewTopic"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Topic"
-            android:textSize="25dp"
-            android:layout_gravity="center_vertical"
-            />
-    </LinearLayout>
+
+    <TextView
+        android:textColor="@android:color/black"
+        android:id="@+id/textViewTopic"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:text="Topic"
+        android:layout_gravity="center_vertical"
+        />
 
 </LinearLayout>
