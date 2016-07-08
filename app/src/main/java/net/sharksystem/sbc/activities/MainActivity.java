@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity
         if(mWifiManager.isWifiEnabled()){
             mServiceController = SharkServiceController.getInstance(this);
             mServiceController.setOffer(mName, mInterest);
-            mServiceController.bindToService();
+            mServiceController.startShark();
         } else {
             showWifiActivationDialog();
         }
@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void onResume() {
-        mServiceController.bindToService();
+//        mServiceController.startShark();
         super.onResume();
     }
 
@@ -78,7 +78,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void onStop() {
-        mServiceController.unbindFromService();
+        mServiceController.stopShark();
         super.onStop();
     }
 
@@ -86,7 +86,7 @@ public class MainActivity extends AppCompatActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_reset:
-                mServiceController.unbindFromService();
+                mServiceController.stopShark();
                 mServiceController.resetPeers();
                 Intent intent = new Intent(this, IntroActivity.class);
                 startActivity(intent);
@@ -95,12 +95,12 @@ public class MainActivity extends AppCompatActivity
                 if(mWifiManager.isWifiEnabled()){
                     mWifiManager.setWifiEnabled(false);
                     mMenu.getItem(0).setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_signal_wifi_off, null));
-                    mServiceController.unbindFromService();
+                    mServiceController.stopShark();
                 } else {
                     mWifiManager.setWifiEnabled(true);
                     mMenu.getItem(0).setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_signal_wifi_4_bar, null));
                     mServiceController.setOffer(mName, mInterest);
-                    mServiceController.bindToService();
+                    mServiceController.startShark();
                 }
                 return true;
             default:
@@ -155,7 +155,7 @@ public class MainActivity extends AppCompatActivity
         mMenu.getItem(0).setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_signal_wifi_4_bar, null));
         mServiceController = SharkServiceController.getInstance(this);
         mServiceController.setOffer(mName, mInterest);
-        mServiceController.bindToService();
+        mServiceController.startShark();
     }
 
     @Override
