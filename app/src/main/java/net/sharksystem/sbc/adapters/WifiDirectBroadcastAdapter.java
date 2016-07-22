@@ -55,6 +55,12 @@ public class WifiDirectBroadcastAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
+    public void setMessages(List messages){
+        _messages.clear();
+        _messages.addAll(messages);
+        notifyDataSetChanged();
+    }
+
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         String message = getItem(position);

@@ -1,13 +1,11 @@
 package net.sharksystem.sbc.fragments;
 
 import android.app.Activity;
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,50 +15,56 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import net.sharkfw.system.L;
 import net.sharksystem.android.peer.SharkServiceController;
 import net.sharksystem.android.protocols.wifidirect.WifiDirectKPNotifier;
 import net.sharksystem.android.Application;
 import net.sharksystem.sbc.R;
 import net.sharksystem.sbc.adapters.WifiDirectBroadcastAdapter;
 
-import java.util.ArrayList;
-
 public class BroadcastsFragment extends Fragment implements View.OnClickListener {
 
-    private final SharkServiceController _serviceController;
-    private final WifiDirectBroadcastAdapter _broadCastAdapter;
-    private final BroadcastReceiver _broadcastReceiver;
-    private EditText _editText;
-    private Button _button;
-    private ArrayList<String> _broadCasts;
-    private ListView _listView;
-    private final Context _context;
+    private final SharkServiceController mServiceController;
+    private final WifiDirectBroadcastAdapter mBroadCastAdapter;
+//    private final BroadcastReceiver _broadcastReceiver;
+    private EditText mEditText;
+    private Button mButton;
+    private ListView mListView;
+    private final Context mContext;
 
     public BroadcastsFragment() {
-        _context = Application.getAppContext();
+        mContext = Application.getAppContext();
 
-        _serviceController = SharkServiceController.getInstance(getContext());
-        _broadCasts = new ArrayList<>();
-        _broadCastAdapter = new WifiDirectBroadcastAdapter(_context);
+        mServiceController = SharkServiceController.getInstance(getContext());
+        mBroadCastAdapter = new WifiDirectBroadcastAdapter(mContext);
 
-        _broadcastReceiver = new BroadcastReceiver() {
+        final Handler handler = new Handler();
+        handler.post(new Runnable() {
             @Override
-            public void onReceive(Context context, Intent intent) {
-                String action = intent.getAction();
-
-                if(WifiDirectKPNotifier.NEW_BROADCAST_ACTION.equals(action)){
-                    L.d("Received a broadcast", this);
-//                    _broadCasts.add(intent.getStringExtra("broadcast_message"));
-                    _broadCastAdapter.add(intent.getStringExtra("broadcast_message"));
-                }
+            public void run() {
+                mBroadCastAdapter.setMessages(mServiceController.getStringMessages());
+                handler.postDelayed(this, 1000);
             }
-        };
+        });
+
+//        _broadcastReceiver = new BroadcastReceiver() {
+//            @Override
+//            public void onReceive(Context context, Intent intent) {
+//                String action = intent.getAction();
+//
+//                if(WifiDirectKPNotifier.NEW_BROADCAST_ACTION.equals(action)){
+//                    L.d("Received a broadcast", this);
+////                    _broadCasts.add(intent.getStringExtra("broadcast_message"));
+//                    mBroadCastAdapter.add(intent.getStringExtra("broadcast_message"));
+//                }
+//            }
+//        };
+
+
 
 
 //        IntentFilter intentFilter = new IntentFilter();
 //        intentFilter.addAction(WifiDirectKPNotifier.NEW_BROADCAST_ACTION);
-//        LocalBroadcastManager.getInstance(_context).registerReceiver(
+//        LocalBroadcastManager.getInstance(mContext).registerReceiver(
 //                _broadcastReceiver, intentFilter);
     }
 
@@ -73,14 +77,14 @@ public class BroadcastsFragment extends Fragment implements View.OnClickListener
     public void onResume() {
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(WifiDirectKPNotifier.NEW_BROADCAST_ACTION);
-        LocalBroadcastManager.getInstance(_context).registerReceiver(
-                _broadcastReceiver, intentFilter);
+//        LocalBroadcastManager.getInstance(mContext).registerReceiver(
+//                _broadcastReceiver, intentFilter);
         super.onResume();
     }
 
     @Override
     public void onPause() {
-        LocalBroadcastManager.getInstance(_context).unregisterReceiver(_broadcastReceiver);
+//        LocalBroadcastManager.getInstance(mContext).unregisterReceiver(_broadcastReceiver);
         super.onPause();
     }
 
@@ -89,25 +93,25 @@ public class BroadcastsFragment extends Fragment implements View.OnClickListener
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_broadcasts, container, false);
 
-        _editText = (EditText) view.findViewById(R.id.editTextBroadcast);
-        _button = (Button) view.findViewById(R.id.buttonSendBroadcast);
-        _button.setOnClickListener(this);
+        mEditText = (EditText) view.findViewById(R.id.editTextBroadcast);
+        mButton = (Button) view.findViewById(R.id.buttonSendBroadcast);
+        mButton.setOnClickListener(this);
 
-        _listView = (ListView) view.findViewById(R.id.listViewBroadcasts);
-        _listView.setAdapter(_broadCastAdapter);
+        mListView = (ListView) view.findViewById(R.id.listViewBroadcasts);
+        mListView.setAdapter(mBroadCastAdapter);
         return view;
     }
 
     @Override
     public void onClick(View v) {
-        String broadcast = _editText.getText().toString();
+        String broadcast = mEditText.getText().toString();
 
         hideSoftKeyboard(getActivity());
 
         if(!broadcast.isEmpty()){
-            _serviceController.sendBroadcast(broadcast);
+            mServiceController.sendBroadcast(broadcast);
             Toast.makeText(getContext(), "Broadcast sent", Toast.LENGTH_SHORT).show();
-            _editText.getText().clear();
+            mEditText.getText().clear();
         } else {
             Toast.makeText(getContext(), "Broadcast is empty", Toast.LENGTH_SHORT).show();
         }
