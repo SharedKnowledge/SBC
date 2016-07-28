@@ -43,13 +43,13 @@ public class RadarFragment extends Fragment {
 
                 long current = System.currentTimeMillis();
 
-                Iterator<WifiDirectPeer> iterator = mPeerList.iterator();
-                while (iterator.hasNext()){
-                    WifiDirectPeer peer = iterator.next();
-                    if((current - peer.getLastUpdated()) > 1000 * 60){
-                        mPeerList.remove(peer);
-                    }
-                }
+//                Iterator<WifiDirectPeer> iterator = mPeerList.iterator();
+//                while (iterator.hasNext()){
+//                    WifiDirectPeer peer = iterator.next();
+//                    if((current - peer.getLastUpdated()) > 1000 * 60){
+//                        mPeerList.remove(peer);
+//                    }
+//                }
 
                 _peerAdapter.setList(mPeerList);
                 _threadHandler.postDelayed(this, 5000);
