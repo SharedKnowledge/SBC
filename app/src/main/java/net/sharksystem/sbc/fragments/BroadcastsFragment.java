@@ -16,7 +16,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import net.sharksystem.android.peer.SharkServiceController;
-import net.sharksystem.android.protocols.wifidirect.WifiDirectKPNotifier;
+import net.sharksystem.android.protocols.wifidirect_obsolete.WifiDirectKPNotifier;
 import net.sharksystem.android.Application;
 import net.sharksystem.sbc.R;
 import net.sharksystem.sbc.adapters.WifiDirectBroadcastAdapter;

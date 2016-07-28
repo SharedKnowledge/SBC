@@ -9,7 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
-import net.sharksystem.android.protocols.wifidirect.WifiDirectPeer;
+import net.sharksystem.android.protocols.wifidirect_obsolete.WifiDirectPeer;
 import net.sharksystem.android.peer.SharkServiceController;
 import net.sharksystem.android.Application;
 import net.sharksystem.sbc.R;

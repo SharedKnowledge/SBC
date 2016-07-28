@@ -10,7 +10,7 @@ import android.widget.TextView;
 import net.sharkfw.asip.ASIPInterest;
 import net.sharkfw.knowledgeBase.SemanticTag;
 import net.sharkfw.knowledgeBase.SharkKBException;
-import net.sharksystem.android.protocols.wifidirect.WifiDirectPeer;
+import net.sharksystem.android.protocols.wifidirect_obsolete.WifiDirectPeer;
 
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -19,7 +19,7 @@ import java.util.List;
 import net.sharksystem.sbc.R;
 
 /**
- * Created by micha on 17.12.15.
+ * Created by j4rvis on 17.12.15.
  */
 public class WifiDirectPeerAdapter extends BaseAdapter {
 
